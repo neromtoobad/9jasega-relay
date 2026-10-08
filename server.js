@@ -106,3 +106,6 @@ setInterval(() => {
 }, 15000);
 
 server.listen(PORT, () => console.log('9ja Sega relay on :' + PORT));
+
+// Railway stops old containers with SIGTERM on every deploy: close sockets and exit cleanly
+for (const sig of ['SIGTERM', 'SIGINT']) process.on(sig, () => { for (const ws of wss.clients) try { ws.close(1012, 'restarting'); } catch {} server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 1500); });
